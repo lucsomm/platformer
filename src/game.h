@@ -10,9 +10,9 @@ namespace platformer {
 
         Game& operator=(const Game&) = delete;
 
-        Game& operator=(const Game&&) = delete;
+        Game& operator=(Game&&) = delete;
 
-        Game(const Game&&) = delete;
+        Game(Game&&) = delete;
 
         ~Game();
 
