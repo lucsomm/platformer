@@ -62,9 +62,9 @@ namespace platformer {
     public:
         explicit
         StateMachineBase(State* buffer_ptr, const size_t buffer_size,
-                         const size_t buffer_align) : current_state(buffer_ptr), buffer_size{buffer_size},
+                         const size_t buffer_align) : current_state(buffer_ptr),
+                                                      buffer_size{buffer_size},
                                                       buffer_align{buffer_align} {
-            create_state<State>();
         }
 
         virtual ~StateMachineBase() {
@@ -78,6 +78,14 @@ namespace platformer {
         StateMachineBase(StateMachineBase&&) = delete;
 
         StateMachineBase& operator=(StateMachineBase&&) = delete;
+
+        [[nodiscard]] const State& get_current_state() const {
+            return *current_state;
+        }
+
+        [[nodiscard]] State& get_current_state() {
+            return *current_state;
+        }
 
         template<concepts::State T, typename... Args>
         void change_state(Args&&... args) {
@@ -111,14 +119,17 @@ namespace platformer {
         concept StateMachine = std::derived_from<T, StateMachineBase>;
     }
 
-    template<concepts::State... States>
+    template<concepts::State InitialState = State, concepts::State... States>
     class StateMachine final : public StateMachineBase {
     public:
-        static constexpr size_t STATE_BUFFER_SIZE{std::max({sizeof(State), sizeof(States)...})};
-        static constexpr size_t STATE_BUFFER_ALIGN{std::max({alignof(State), alignof(States)...})};
+        static constexpr size_t STATE_BUFFER_SIZE{std::max({sizeof(InitialState), sizeof(States)...})};
+        static constexpr size_t STATE_BUFFER_ALIGN{std::max({alignof(InitialState), alignof(States)...})};
 
-        StateMachine() : StateMachineBase(reinterpret_cast<State*>(state_buffer.data()), STATE_BUFFER_SIZE,
-                                          STATE_BUFFER_ALIGN) {
+        template<typename... Args>
+        explicit StateMachine(Args... args) : StateMachineBase(reinterpret_cast<State*>(state_buffer.data()),
+                                                               STATE_BUFFER_SIZE,
+                                                               STATE_BUFFER_ALIGN) {
+            create_state<InitialState>(std::forward<Args>(args)...);
         }
 
     private:
