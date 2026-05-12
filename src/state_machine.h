@@ -58,12 +58,12 @@ namespace platformer {
         concept State = std::derived_from<T, platformer::State>;
     }
 
-    template<concepts::State InitialState, concepts::State... States>
+    template<concepts::State DefaultState, concepts::State... States>
     class StateMachine;
 
     class StateMachineBase {
     public:
-        template<concepts::State InitialState, concepts::State... States>
+        template<concepts::State DefaultState, concepts::State... States>
         friend class StateMachine;
 
         virtual ~StateMachineBase() {
@@ -125,16 +125,24 @@ namespace platformer {
         concept StateMachine = std::derived_from<T, StateMachineBase>;
     }
 
-    template<concepts::State InitialState = State, concepts::State... States>
+    template<concepts::State DefaultState = State, concepts::State... States>
     class StateMachine final : public StateMachineBase {
     public:
-        static constexpr size_t STATE_BUFFER_SIZE{std::max({sizeof(InitialState), sizeof(States)...})};
-        static constexpr size_t STATE_BUFFER_ALIGN{std::max({alignof(InitialState), alignof(States)...})};
+        static constexpr size_t STATE_BUFFER_SIZE{std::max({sizeof(DefaultState), sizeof(States)...})};
+        static constexpr size_t STATE_BUFFER_ALIGN{std::max({alignof(DefaultState), alignof(States)...})};
 
         template<typename... Args>
         explicit StateMachine(Args... args) : StateMachineBase(reinterpret_cast<State*>(state_buffer.data()),
                                                                STATE_BUFFER_SIZE,
                                                                STATE_BUFFER_ALIGN) {
+            create_state<DefaultState>(std::forward<Args>(args)...);
+        }
+
+        template<concepts::State InitialState, typename... Args>
+        explicit StateMachine(std::type_identity<InitialState>, Args... args) : StateMachineBase(
+            reinterpret_cast<State*>(state_buffer.data()),
+            STATE_BUFFER_SIZE,
+            STATE_BUFFER_ALIGN) {
             create_state<InitialState>(std::forward<Args>(args)...);
         }
 

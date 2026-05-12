@@ -9,7 +9,7 @@ namespace platformer {
 
         void physics_update(float delta);
 
-        StateMachine<StateWalk> state_machine;
+        StateMachine<StateWalk> state_machine{};
         Transform transform;
         glm::vec2 velocity{};
     };
