@@ -58,14 +58,13 @@ namespace platformer {
         concept State = std::derived_from<T, platformer::State>;
     }
 
+    template<concepts::State InitialState, concepts::State... States>
+    class StateMachine;
+
     class StateMachineBase {
     public:
-        explicit
-        StateMachineBase(State* buffer_ptr, const size_t buffer_size,
-                         const size_t buffer_align) : current_state(buffer_ptr),
-                                                      buffer_size{buffer_size},
-                                                      buffer_align{buffer_align} {
-        }
+        template<concepts::State InitialState, concepts::State... States>
+        friend class StateMachine;
 
         virtual ~StateMachineBase() {
             destroy_state();
@@ -94,6 +93,13 @@ namespace platformer {
         }
 
     private:
+        explicit
+        StateMachineBase(State* buffer_ptr, const size_t buffer_size,
+                         const size_t buffer_align) : current_state(buffer_ptr),
+                                                      buffer_size{buffer_size},
+                                                      buffer_align{buffer_align} {
+        }
+
         template<concepts::State T, typename... Args>
         void create_state(Args&&... args) {
             assert(sizeof(T) <= buffer_size);
