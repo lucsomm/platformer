@@ -60,7 +60,10 @@ namespace platformer {
 
     class StateMachineBase {
     public:
-        explicit StateMachineBase(State* buffer_ptr) : current_state(buffer_ptr) {
+        explicit
+        StateMachineBase(State* buffer_ptr, const size_t buffer_size,
+                         const size_t buffer_align) : current_state(buffer_ptr), buffer_size{buffer_size},
+                                                      buffer_align{buffer_align} {
             create_state<State>();
         }
 
@@ -85,6 +88,9 @@ namespace platformer {
     private:
         template<concepts::State T, typename... Args>
         void create_state(Args&&... args) {
+            assert(sizeof(T) <= buffer_size);
+            assert(alignof(T) <= buffer_align);
+
             current_state = new(current_state) T(std::forward<Args>(args)...);
             current_state->state_machine = this;
             current_state->enter();
@@ -96,6 +102,8 @@ namespace platformer {
         }
 
         State* current_state{};
+        size_t buffer_size{};
+        size_t buffer_align{};
     };
 
     namespace concepts {
@@ -109,7 +117,8 @@ namespace platformer {
         static constexpr size_t STATE_BUFFER_SIZE{std::max({sizeof(State), sizeof(States)...})};
         static constexpr size_t STATE_BUFFER_ALIGN{std::max({alignof(State), alignof(States)...})};
 
-        StateMachine() : StateMachineBase(reinterpret_cast<State*>(state_buffer.data())) {
+        StateMachine() : StateMachineBase(reinterpret_cast<State*>(state_buffer.data()), STATE_BUFFER_SIZE,
+                                          STATE_BUFFER_ALIGN) {
         }
 
     private:
