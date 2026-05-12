@@ -6,6 +6,14 @@ namespace platformer {
     public:
         Game();
 
+        Game(const Game&) = delete;
+
+        Game& operator=(const Game&) = delete;
+
+        Game& operator=(const Game&&) = delete;
+
+        Game(const Game&&) = delete;
+
         ~Game();
 
         void run();
@@ -21,7 +29,7 @@ namespace platformer {
             return 1. / physics_rate;
         }
 
-        double physics_rate = 60.;
+        double physics_rate = 120.;
     };
 }
 
