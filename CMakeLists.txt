@@ -26,6 +26,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glm)
 
 add_executable(platformer src/main.cpp
-        src/game.cpp)
+        src/game.cpp
+        src/player.cpp)
 
 target_link_libraries(platformer PRIVATE raylib glm)
