@@ -34,7 +34,7 @@ namespace platformer {
         virtual void physics_update(float delta) {
         }
 
-        virtual void draw() {
+        virtual void draw(float alpha) {
         }
 
         virtual void exit() {

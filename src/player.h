@@ -5,6 +5,8 @@
 namespace platformer {
     struct Player {
         class StateWalk final : public State {
+            void physics_update(float delta) override;
+            void draw(float alpha) override;
         };
 
         void physics_update(float delta);
