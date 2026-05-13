@@ -4,6 +4,7 @@
 #include <cassert>
 #include <concepts>
 #include <new>
+#include <type_traits>
 
 namespace platformer {
     class StateMachineBase;
@@ -139,7 +140,7 @@ namespace platformer {
         }
 
         template<concepts::State InitialState, typename... Args>
-        explicit StateMachine(std::type_identity<InitialState>, Args... args) : StateMachineBase(
+        explicit StateMachine(std::in_place_type_t<InitialState>, Args... args) : StateMachineBase(
             reinterpret_cast<State*>(state_buffer.data()),
             STATE_BUFFER_SIZE,
             STATE_BUFFER_ALIGN) {
