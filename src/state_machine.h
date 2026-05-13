@@ -4,7 +4,6 @@
 #include <cassert>
 #include <concepts>
 #include <new>
-#include <type_traits>
 
 namespace platformer {
     class StateMachineBase;
@@ -88,9 +87,9 @@ namespace platformer {
         }
 
         template<concepts::State T, typename... Args>
-        void change_state(Args&&... args) {
+        void change_state(Args... args) {
             destroy_state();
-            create_state<T>(std::forward<Args>(args)...);
+            create_state<T>(std::move(args)...);
         }
 
     private:
