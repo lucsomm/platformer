@@ -18,11 +18,15 @@ namespace platformer {
         explicit Transform(const glm::vec2& position) : position{position} {
         }
 
-        glm::vec2 position{};
-
         void update_previous_position() {
             previous_position = position;
         }
+
+        [[nodiscard]] glm::vec2 interpolated_position(const float alpha) const {
+            return previous_position + (position - previous_position) * alpha;
+        }
+
+        glm::vec2 position{};
 
     private:
         glm::vec2 previous_position{};
