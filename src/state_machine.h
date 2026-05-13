@@ -133,14 +133,14 @@ namespace platformer {
         static constexpr size_t STATE_BUFFER_ALIGN{std::max({alignof(DefaultState), alignof(States)...})};
 
         template<typename... Args>
-        explicit StateMachine(Args... args) : StateMachineBase(reinterpret_cast<State*>(state_buffer.data()),
-                                                               STATE_BUFFER_SIZE,
-                                                               STATE_BUFFER_ALIGN) {
+        explicit StateMachine(Args&&... args) : StateMachineBase(reinterpret_cast<State*>(state_buffer.data()),
+                                                                 STATE_BUFFER_SIZE,
+                                                                 STATE_BUFFER_ALIGN) {
             create_state<DefaultState>(std::forward<Args>(args)...);
         }
 
         template<concepts::State InitialState, typename... Args>
-        explicit StateMachine(std::in_place_type_t<InitialState>, Args... args) : StateMachineBase(
+        explicit StateMachine(std::in_place_type_t<InitialState>, Args&&... args) : StateMachineBase(
             reinterpret_cast<State*>(state_buffer.data()),
             STATE_BUFFER_SIZE,
             STATE_BUFFER_ALIGN) {
