@@ -26,9 +26,11 @@ platformer::Game::~Game() {
 }
 
 void platformer::Game::update(const float delta) {
+    state_machine.get_current_state().update(delta);
 }
 
 void platformer::Game::physics_update(float delta) {
+    state_machine.get_current_state().physics_update(delta);
 }
 
 void platformer::Game::draw(const float alpha) {
@@ -36,6 +38,7 @@ void platformer::Game::draw(const float alpha) {
 
     ClearBackground(RAYWHITE);
     DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+    state_machine.get_current_state().draw(alpha);
 
     EndDrawing();
 }

@@ -9,24 +9,30 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(FetchContent)
 
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(BUILD_GAMES    OFF CACHE BOOL "" FORCE)
+set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 
 FetchContent_Declare(
         raylib
         GIT_REPOSITORY https://github.com/raysan5/raylib.git
-        GIT_TAG        5.0 # Stable release tag
+        GIT_TAG 5.0 # Stable release tag
 )
 FetchContent_MakeAvailable(raylib)
 
 FetchContent_Declare(
         glm
         GIT_REPOSITORY https://github.com/g-truc/glm.git
-        GIT_TAG        0.9.9.8 # Stable release tag
+        GIT_TAG 0.9.9.8 # Stable release tag
 )
 FetchContent_MakeAvailable(glm)
 
-add_executable(platformer src/main.cpp
-        src/game.cpp
-        src/player.cpp)
+FetchContent_Declare(
+        entt
+        GIT_REPOSITORY https://github.com/skypjack/entt.git
+        GIT_TAG v3.13.2 # Stable release tag
+)
+FetchContent_MakeAvailable(entt)
 
-target_link_libraries(platformer PRIVATE raylib glm)
+add_executable(platformer src/main.cpp
+        src/game.cpp)
+
+target_link_libraries(platformer PRIVATE raylib glm EnTT::EnTT)
