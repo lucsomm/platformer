@@ -37,7 +37,7 @@ void platformer::Game::draw(const float alpha) {
     BeginDrawing();
 
     ClearBackground(RAYWHITE);
-    DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+    DrawText("Hej!", 190, 200, 20, LIGHTGRAY);
     state_machine.get_current_state().draw(alpha);
 
     EndDrawing();

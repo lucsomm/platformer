@@ -25,14 +25,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glm)
 
-FetchContent_Declare(
-        entt
-        GIT_REPOSITORY https://github.com/skypjack/entt.git
-        GIT_TAG v3.13.2 # Stable release tag
-)
-FetchContent_MakeAvailable(entt)
-
 add_executable(platformer src/main.cpp
-        src/game.cpp)
+        src/game.cpp
+        src/player.cpp)
 
-target_link_libraries(platformer PRIVATE raylib glm EnTT::EnTT)
+target_include_directories(platformer PRIVATE src)
+target_link_libraries(platformer PRIVATE raylib glm)
