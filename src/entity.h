@@ -48,17 +48,21 @@ namespace platformer {
     protected:
         template<typename>
         static EntityId get_id() {
-            static EntityId id = id_counter++;
+            static EntityId id = get_next_type_id();
             return id;
         }
 
         glm::vec2 previous_position{};
 
     private:
+        static EntityId get_next_type_id() {
+            static EntityId id_counter = 0;
+            return id_counter++;
+        }
+
         static std::vector<UpdateEntitiesFunc> update_entities_funcs;
         static std::vector<PhysicsUpdateEntitiesFunc> physics_update_entities_funcs;
         static std::vector<DrawEntitiesFunc> draw_entities_funcs;
-        static inline EntityId id_counter{};
         EntityId id{};
     };
 
