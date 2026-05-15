@@ -13,12 +13,7 @@ namespace platformer {
         using PhysicsUpdateEntitiesFunc = void (*)(float delta);
         using DrawEntitiesFunc = void (*)(float alpha);
 
-        explicit EntityBase(const EntityId id, const UpdateEntitiesFunc update_entities_func,
-                            const PhysicsUpdateEntitiesFunc physics_update_entities_func,
-                            const DrawEntitiesFunc draw_entities_func) : id{id} {
-            update_entities_funcs.push_back(update_entities_func);
-            physics_update_entities_funcs.push_back(physics_update_entities_func);
-            draw_entities_funcs.push_back(draw_entities_func);
+        explicit EntityBase(const EntityId id) : id{id} {
         }
 
         [[nodiscard]] EntityId get_id() const {
@@ -26,19 +21,19 @@ namespace platformer {
         }
 
         static void update_all(const float delta) {
-            for (auto entity_func: update_entities_funcs) {
+            for (auto entity_func: update_funcs) {
                 entity_func(delta);
             }
         }
 
         static void physics_update_all(const float delta) {
-            for (auto entity_func: physics_update_entities_funcs) {
+            for (auto entity_func: physics_update_funcs) {
                 entity_func(delta);
             }
         }
 
         static void draw_all(const float alpha) {
-            for (auto entity_func: draw_entities_funcs) {
+            for (auto entity_func: draw_funcs) {
                 entity_func(alpha);
             }
         }
@@ -52,6 +47,10 @@ namespace platformer {
             return id;
         }
 
+        template<typename>
+        static void register_type(UpdateEntitiesFunc f1, PhysicsUpdateEntitiesFunc f2, DrawEntitiesFunc f3) {
+        }
+
         glm::vec2 previous_position{};
 
     private:
@@ -60,16 +59,26 @@ namespace platformer {
             return id_counter++;
         }
 
-        static std::vector<UpdateEntitiesFunc> update_entities_funcs;
-        static std::vector<PhysicsUpdateEntitiesFunc> physics_update_entities_funcs;
-        static std::vector<DrawEntitiesFunc> draw_entities_funcs;
+        static std::vector<UpdateEntitiesFunc> update_funcs;
+        static std::vector<PhysicsUpdateEntitiesFunc> physics_update_funcs;
+        static std::vector<DrawEntitiesFunc> draw_funcs;
         EntityId id{};
     };
 
     template<typename Derived>
     class Entity : public EntityBase {
     public:
-        Entity() : EntityBase(get_id<Derived>()) {
+        template<typename... Args>
+        static Derived& create(Args&&... args) {
+            static auto register_type = [&] {
+                EntityBase::register_type<Derived>(update_entities, physics_update_entities, draw_entities);
+            }();
+            entities.emplace_back(std::forward<Args>(args)...);
+            return entities.back();
+        }
+
+        static EntityId get_id() {
+            return get_id<Derived>();
         }
 
         void update(float delta) {
@@ -87,6 +96,9 @@ namespace platformer {
         }
 
     private:
+        Entity() : EntityBase(get_id<Derived>()) {
+        }
+
         static void update_entities(const float delta) {
             for (auto& entity: entities) {
                 entity.update(delta);
