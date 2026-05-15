@@ -49,6 +49,9 @@ namespace platformer {
 
         template<typename>
         static void register_type(UpdateEntitiesFunc f1, PhysicsUpdateEntitiesFunc f2, DrawEntitiesFunc f3) {
+            update_funcs.push_back(f1);
+            physics_update_funcs.push_back(f2);
+            draw_funcs.push_back(f3);
         }
 
         glm::vec2 previous_position{};
@@ -73,7 +76,6 @@ namespace platformer {
             static auto register_type = [&] {
                 EntityBase::register_type<Derived>(update_entities, physics_update_entities, draw_entities);
             }();
-            //
             entities.emplace_back(std::forward<Args>(args)...);
             return entities.back();
         }
