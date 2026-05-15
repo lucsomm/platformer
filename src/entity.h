@@ -72,7 +72,7 @@ namespace platformer {
     public:
         template<typename... Args>
         static Derived& create(Args&&... args) {
-            static auto register_type = [&] {
+            static auto register_type = [] {
                 EntityBase::register_type<Derived>(update_entities, physics_update_entities, draw_entities);
             }();
             entities.emplace_back(std::forward<Args>(args)...);

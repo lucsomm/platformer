@@ -1,6 +1,5 @@
 #pragma once
 #include "state_machine.h"
-#include "entt/entt.hpp"
 
 namespace platformer {
     class Game {
@@ -27,7 +26,6 @@ namespace platformer {
 
         void run();
 
-        entt::registry registry;
         StateMachine<StateGameplay> state_machine;
         // Have a gameplay state that hosts levels as states too?
 

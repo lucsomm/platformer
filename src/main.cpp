@@ -2,5 +2,4 @@
 
 int main() {
     platformer::Game::get_singleton().run();
-    entt::registry r;
 }
