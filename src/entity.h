@@ -5,18 +5,17 @@
 #include "transform.h"
 
 namespace platformer {
-    using EntityId = size_t;
-
     class EntityBase {
     public:
+        using TypeId = size_t;
         using UpdateEntitiesFunc = void (*)(float delta);
         using PhysicsUpdateEntitiesFunc = void (*)(float delta);
         using DrawEntitiesFunc = void (*)(float alpha);
 
-        explicit EntityBase(const EntityId id) : id{id} {
+        explicit EntityBase(const TypeId id) : id{id} {
         }
 
-        [[nodiscard]] EntityId get_id() const {
+        [[nodiscard]] TypeId get_id() const {
             return id;
         }
 
@@ -42,8 +41,8 @@ namespace platformer {
 
     protected:
         template<typename>
-        static EntityId get_id() {
-            static EntityId id = get_next_type_id();
+        static TypeId get_id() {
+            static TypeId id = get_next_type_id();
             return id;
         }
 
@@ -57,15 +56,15 @@ namespace platformer {
         glm::vec2 previous_position{};
 
     private:
-        static EntityId get_next_type_id() {
-            static EntityId id_counter = 0;
+        static TypeId get_next_type_id() {
+            static TypeId id_counter = 0;
             return id_counter++;
         }
 
         static std::vector<UpdateEntitiesFunc> update_funcs;
         static std::vector<PhysicsUpdateEntitiesFunc> physics_update_funcs;
         static std::vector<DrawEntitiesFunc> draw_funcs;
-        EntityId id{};
+        TypeId id{};
     };
 
     template<typename Derived>
@@ -80,7 +79,7 @@ namespace platformer {
             return entities.back();
         }
 
-        static EntityId get_id() {
+        static TypeId get_id() {
             return get_id<Derived>();
         }
 
