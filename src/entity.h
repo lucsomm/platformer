@@ -73,12 +73,17 @@ namespace platformer {
             static auto register_type = [&] {
                 EntityBase::register_type<Derived>(update_entities, physics_update_entities, draw_entities);
             }();
+            //
             entities.emplace_back(std::forward<Args>(args)...);
             return entities.back();
         }
 
         static EntityId get_id() {
             return get_id<Derived>();
+        }
+
+        static void reserve(size_t size) {
+            entities.reserve(size);
         }
 
         void update(float delta) {
