@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "glm/vec2.hpp"
-#include "transform.h"
 
 namespace platformer {
     class EntityBase {

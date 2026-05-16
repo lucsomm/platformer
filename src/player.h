@@ -1,7 +1,6 @@
 #pragma once
 #include "entity.h"
 #include "state_machine.h"
-#include "transform.h"
 
 namespace platformer {
     class Player : public Entity<Player> {
