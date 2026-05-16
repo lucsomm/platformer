@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "player.h"
 
+
 void platformer::Player::StateWalk::physics_update(const float delta) {
     const glm::vec2 dir{
         static_cast<float>(IsKeyDown(KEY_D)) - static_cast<float>(IsKeyDown(KEY_A)),
@@ -8,10 +9,13 @@ void platformer::Player::StateWalk::physics_update(const float delta) {
     };
 
     player.velocity.x = dir.x * player.walkSpeed;
+    player.velocity.y += GRAVITY * player.gravity_scale * delta;
+
     player.position += player.velocity * delta;
 }
 
-void platformer::Player::StateWalk::draw(glm::vec2 draw_position) {
+void platformer::Player::StateWalk::draw(const glm::vec2 draw_position) {
+    body_collider.debug_draw(draw_position);
 }
 
 void platformer::Player::physics_update_impl(const float delta) {
@@ -19,5 +23,5 @@ void platformer::Player::physics_update_impl(const float delta) {
 }
 
 void platformer::Player::draw_impl(const glm::vec2 draw_position) {
-    DrawRectangleV(to_ray_vec(draw_position), Vector2{16, 16}, RED);
+    state_machine.get_current_state().draw(draw_position);
 }

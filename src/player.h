@@ -1,4 +1,5 @@
 #pragma once
+#include "collision.h"
 #include "entity.h"
 #include "state_machine.h"
 
@@ -15,6 +16,7 @@ namespace platformer {
             void draw(glm::vec2 draw_position) override;
 
         private:
+            AABBCollider body_collider{.extents = {32, 32}};
             Player& player;
         };
 
@@ -26,8 +28,12 @@ namespace platformer {
         void draw_impl(glm::vec2 draw_position);
 
     private:
+        static constexpr float GRAVITY = 200.f;
+
         StateMachine<StateWalk> state_machine{*this};
         glm::vec2 velocity{};
+        AABBCollider hurt_box;
         float walkSpeed = 200.f;
+        float gravity_scale = 1.f;
     };
 }
