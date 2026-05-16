@@ -97,18 +97,26 @@ namespace platformer {
         }
 
     private:
+#ifdef DEBUG
         explicit
         StateMachineBase(State* buffer_ptr, const size_t buffer_size,
                          const size_t buffer_align) : current_state(buffer_ptr),
                                                       buffer_size{buffer_size},
                                                       buffer_align{buffer_align} {
         }
+#else
+        explicit
+        StateMachineBase(State* buffer_ptr) : current_state(buffer_ptr) {
+        }
+#endif
+
 
         template<concepts::State T, typename... Args>
         void create_state(Args&&... args) {
+#ifdef DEBUG
             assert(sizeof(T) <= buffer_size);
             assert(alignof(T) <= buffer_align);
-
+#endif
             current_state = new(current_state) T(std::forward<Args>(args)...);
             current_state->state_machine = this;
             current_state->enter();
@@ -120,8 +128,10 @@ namespace platformer {
         }
 
         State* current_state{};
+#ifdef DEBUG
         size_t buffer_size{};
         size_t buffer_align{};
+#endif
     };
 
     namespace concepts {
@@ -135,6 +145,7 @@ namespace platformer {
         static constexpr size_t STATE_BUFFER_SIZE{std::max({sizeof(DefaultState), sizeof(States)...})};
         static constexpr size_t STATE_BUFFER_ALIGN{std::max({alignof(DefaultState), alignof(States)...})};
 
+#ifdef DEBUG
         template<typename... Args>
             requires (!(sizeof...(Args) == 1 && (std::same_as<StateMachine, std::remove_cvref_t<Args> > && ...)))
         explicit StateMachine(Args&&... args) : StateMachineBase(reinterpret_cast<State*>(state_buffer.data()),
@@ -150,6 +161,19 @@ namespace platformer {
             STATE_BUFFER_ALIGN) {
             create_state<InitialState>(std::forward<Args>(args)...);
         }
+#else
+        template<typename... Args>
+            requires (!(sizeof...(Args) == 1 && (std::same_as<StateMachine, std::remove_cvref_t<Args> > && ...)))
+        explicit StateMachine(Args&&... args) : StateMachineBase(reinterpret_cast<State*>(state_buffer.data())) {
+            create_state<DefaultState>(std::forward<Args>(args)...);
+        }
+
+        template<concepts::State InitialState, typename... Args>
+        explicit StateMachine(std::in_place_type_t<InitialState>, Args&&... args) : StateMachineBase(
+            reinterpret_cast<State*>(state_buffer.data())) {
+            create_state<InitialState>(std::forward<Args>(args)...);
+        }
+#endif
 
     private:
         alignas(STATE_BUFFER_ALIGN) std::array<std::byte, STATE_BUFFER_SIZE> state_buffer;

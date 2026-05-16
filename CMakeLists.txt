@@ -14,14 +14,14 @@ set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
         raylib
         GIT_REPOSITORY https://github.com/raysan5/raylib.git
-        GIT_TAG 5.0 # Stable release tag
+        GIT_TAG 5.0
 )
 FetchContent_MakeAvailable(raylib)
 
 FetchContent_Declare(
         glm
         GIT_REPOSITORY https://github.com/g-truc/glm.git
-        GIT_TAG 0.9.9.8 # Stable release tag
+        GIT_TAG 0.9.9.8
 )
 FetchContent_MakeAvailable(glm)
 
@@ -31,3 +31,7 @@ add_executable(platformer src/main.cpp
 
 target_include_directories(platformer PRIVATE src)
 target_link_libraries(platformer PRIVATE raylib glm)
+
+target_compile_definitions(platformer PRIVATE
+        $<$<CONFIG:Debug>:DEBUG>
+)
