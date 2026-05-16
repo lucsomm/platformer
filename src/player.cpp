@@ -14,9 +14,10 @@ void platformer::Player::StateWalk::physics_update(const float delta) {
 void platformer::Player::StateWalk::draw(glm::vec2 draw_position) {
 }
 
-void platformer::Player::physics_update_impl(float delta) {
+void platformer::Player::physics_update_impl(const float delta) {
     state_machine.get_current_state().physics_update(delta);
 }
 
-void platformer::Player::draw_impl(glm::vec2 draw_position) {
+void platformer::Player::draw_impl(const glm::vec2 draw_position) {
+    DrawRectangleV(to_ray_vec(draw_position), Vector2{16, 16}, RED);
 }
