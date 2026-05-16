@@ -6,6 +6,18 @@
 #include "raylib.h"
 #include "player.h"
 
+void platformer::Game::StateGameplay::update(const float delta) {
+    EntityBase::update_all(delta);
+}
+
+void platformer::Game::StateGameplay::physics_update(const float delta) {
+    EntityBase::physics_update_all(delta);
+}
+
+void platformer::Game::StateGameplay::draw(const float alpha) {
+    EntityBase::draw_all(alpha);
+}
+
 platformer::Game::Game() {
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 450;

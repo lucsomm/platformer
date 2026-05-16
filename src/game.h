@@ -5,6 +5,11 @@ namespace platformer {
     class Game {
     public:
         class StateGameplay final : public State {
+            void update(float delta) override;
+
+            void physics_update(float delta) override;
+
+            void draw(float alpha) override;
         };
 
         static Game& get_singleton() {
