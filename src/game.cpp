@@ -4,6 +4,7 @@
 #include <chrono>
 
 #include "raylib.h"
+#include "player.h"
 
 platformer::Game::Game() {
     constexpr int screenWidth = 800;
@@ -19,6 +20,8 @@ platformer::Game::Game() {
     }
 
     SetTargetFPS(GetMonitorRefreshRate(monitor));
+
+    Player::create();
 }
 
 platformer::Game::~Game() {
