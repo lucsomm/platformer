@@ -27,7 +27,8 @@ FetchContent_MakeAvailable(glm)
 
 add_executable(platformer src/main.cpp
         src/game.cpp
-        src/player.cpp)
+        src/player.cpp
+        src/collision.cpp)
 
 target_include_directories(platformer PRIVATE src)
 target_link_libraries(platformer PRIVATE raylib glm)
