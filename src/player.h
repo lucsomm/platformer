@@ -27,7 +27,6 @@ namespace platformer {
 
     private:
         StateMachine<StateWalk> state_machine{*this};
-        Transform transform;
         glm::vec2 velocity{};
         float walkSpeed = 200.f;
     };
