@@ -4,6 +4,7 @@
 #include <cassert>
 #include <concepts>
 #include <new>
+#include "glm/vec2.hpp"
 
 namespace platformer {
     class StateMachineBase;
@@ -34,6 +35,9 @@ namespace platformer {
         }
 
         virtual void draw(float alpha) {
+        }
+
+        virtual void draw(glm::vec2 draw_position) {
         }
 
         virtual void exit() {
@@ -132,6 +136,7 @@ namespace platformer {
         static constexpr size_t STATE_BUFFER_ALIGN{std::max({alignof(DefaultState), alignof(States)...})};
 
         template<typename... Args>
+            requires (!(sizeof...(Args) == 1 && (std::same_as<StateMachine, std::remove_cvref_t<Args> > && ...)))
         explicit StateMachine(Args&&... args) : StateMachineBase(reinterpret_cast<State*>(state_buffer.data()),
                                                                  STATE_BUFFER_SIZE,
                                                                  STATE_BUFFER_ALIGN) {
