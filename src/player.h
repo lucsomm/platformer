@@ -20,6 +20,10 @@ namespace platformer {
             Player& player;
         };
 
+        explicit Player(const glm::vec2 position) {
+            this->position = position;
+        }
+
         void update_impl(float delta) {
         }
 

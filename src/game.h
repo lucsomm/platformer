@@ -1,15 +1,20 @@
 #pragma once
 #include "state_machine.h"
+#include "tile_map.h"
 
 namespace platformer {
     class Game {
     public:
-        class StateGameplay final : public State {
+        struct StateGameplay final : public State {
+            StateGameplay();
+
             void update(float delta) override;
 
             void physics_update(float delta) override;
 
             void draw(float alpha) override;
+
+            TileMap tile_map{16, 16};
         };
 
         static Game& get_singleton() {

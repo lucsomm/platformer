@@ -20,8 +20,8 @@ namespace platformer {
             return position.y * map_size.x + position.x;
         }
 
-        [[nodiscard]] glm::vec2 to_position(const size_t index) const {
-            return glm::vec2{static_cast<float>(index % map_size.x * TILE_SIZE), index / map_size.x * TILE_SIZE};
+        [[nodiscard]] glm::ivec2 to_position(const int index) const {
+            return glm::ivec2{index % map_size.x, index / map_size.x} * TILE_SIZE;
         }
 
         [[nodiscard]] const Tile& get_tile(const glm::ivec2 position) const {
@@ -30,6 +30,10 @@ namespace platformer {
 
         [[nodiscard]] Tile& get_tile(const glm::ivec2 position) {
             return tiles[to_index(position)];
+        }
+
+        [[nodiscard]] glm::ivec2 get_size() const {
+            return map_size;
         }
 
         [[nodiscard]] bool is_colliding(const glm::vec2 position, const AABBCollider& collider) const {

@@ -6,6 +6,11 @@
 #include "raylib.h"
 #include "player.h"
 
+platformer::Game::StateGameplay::StateGameplay() {
+    tile_map.debug_create_center_platform();
+    Player::create(glm::vec2{tile_map.get_size().x / 2 * TileMap::TILE_SIZE, 32});
+}
+
 void platformer::Game::StateGameplay::update(const float delta) {
     EntityBase::update_all(delta);
 }
@@ -16,13 +21,15 @@ void platformer::Game::StateGameplay::physics_update(const float delta) {
 
 void platformer::Game::StateGameplay::draw(const float alpha) {
     EntityBase::draw_all(alpha);
+
+    tile_map.debug_draw();
 }
 
 platformer::Game::Game() {
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "Platformer");
 
     const auto monitor = GetCurrentMonitor();
 
@@ -32,8 +39,6 @@ platformer::Game::Game() {
     }
 
     SetTargetFPS(GetMonitorRefreshRate(monitor));
-
-    Player::create();
 }
 
 platformer::Game::~Game() {
@@ -44,15 +49,14 @@ void platformer::Game::update(const float delta) {
     state_machine.get_current_state().update(delta);
 }
 
-void platformer::Game::physics_update(float delta) {
+void platformer::Game::physics_update(const float delta) {
     state_machine.get_current_state().physics_update(delta);
 }
 
 void platformer::Game::draw(const float alpha) {
     BeginDrawing();
 
-    ClearBackground(RAYWHITE);
-    DrawText("Hej!", 190, 200, 20, LIGHTGRAY);
+    ClearBackground(Color{50, 50, 50, 255});
     state_machine.get_current_state().draw(alpha);
 
     EndDrawing();
