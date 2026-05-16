@@ -1,4 +1,5 @@
 #pragma once
+#include <deque>
 #include <vector>
 
 #include "glm/vec2.hpp"
@@ -61,11 +62,31 @@ namespace platformer {
             return id_counter++;
         }
 
-        static std::vector<UpdateEntitiesFunc> update_funcs;
-        static std::vector<PhysicsUpdateEntitiesFunc> physics_update_funcs;
-        static std::vector<DrawEntitiesFunc> draw_funcs;
+        inline static std::vector<UpdateEntitiesFunc> update_funcs;
+        inline static std::vector<PhysicsUpdateEntitiesFunc> physics_update_funcs;
+        inline static std::vector<DrawEntitiesFunc> draw_funcs;
         TypeId id{};
     };
+
+    namespace concepts {
+        template<typename T>
+        concept OverridesUpdate = requires(T t, float delta)
+        {
+            t.update_impl(delta);
+        };
+
+        template<typename T>
+        concept OverridesPhysicsUpdate = requires(T t, float delta)
+        {
+            t.physics_update_impl(delta);
+        };
+
+        template<typename T>
+        concept OverridesDraw = requires(T t, glm::vec2 draw_position)
+        {
+            t.draw(draw_position);
+        };
+    }
 
     template<typename Derived>
     class Entity : public EntityBase {
@@ -74,6 +95,7 @@ namespace platformer {
         static Derived& create(Args&&... args) {
             static auto register_type = [] {
                 EntityBase::register_type<Derived>(update_entities, physics_update_entities, draw_entities);
+                return 0;
             }();
             entities.emplace_back(std::forward<Args>(args)...);
             return entities.back();
@@ -101,10 +123,11 @@ namespace platformer {
             static_cast<Derived*>(this)->draw_impl(draw_position);
         }
 
-    private:
-        Entity() : EntityBase(get_id<Derived>()) {
+    protected:
+        Entity() : EntityBase(EntityBase::get_id<Derived>()) {
         }
 
+    private:
         static void update_entities(const float delta) {
             for (auto& entity: entities) {
                 entity.update(delta);
@@ -123,6 +146,6 @@ namespace platformer {
             }
         }
 
-        static std::vector<Derived> entities;
+        inline static std::deque<Derived> entities;
     };
 }
