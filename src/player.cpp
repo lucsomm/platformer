@@ -20,12 +20,7 @@ void platformer::Player::StateWalk::draw(const glm::vec2 draw_position) {
 
 void platformer::Player::physics_update_impl(const float delta) {
     state_machine.get_current_state().physics_update(delta);
-
-    if (tile_map.is_colliding(position, collider)) {
-        velocity.y = 0.f;
-    }
-
-    position += velocity * delta;
+    tile_map.move_and_slide(delta, position, velocity, collider);
 }
 
 void platformer::Player::draw_impl(const glm::vec2 draw_position) {
