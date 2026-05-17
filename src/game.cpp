@@ -8,7 +8,8 @@
 
 platformer::Game::StateGameplay::StateGameplay() {
     tile_map.debug_create_center_platform();
-    Player::create(glm::vec2{tile_map.get_size().x / 2 * TileMap::TILE_SIZE, 32});
+    auto& player = Player::create(tile_map);
+    player.position = glm::vec2{tile_map.get_size().x / 2 * TileMap::TILE_SIZE, 32};
 }
 
 void platformer::Game::StateGameplay::update(const float delta) {

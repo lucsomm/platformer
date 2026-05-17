@@ -4,6 +4,8 @@
 #include "state_machine.h"
 
 namespace platformer {
+    class TileMap;
+
     class Player : public Entity<Player> {
     public:
         class StateWalk final : public State {
@@ -16,12 +18,10 @@ namespace platformer {
             void draw(glm::vec2 draw_position) override;
 
         private:
-            AABBCollider body_collider{.extents = {32, 32}};
             Player& player;
         };
 
-        explicit Player(const glm::vec2 position) {
-            this->position = position;
+        explicit Player(const TileMap& tile_map) : tile_map(tile_map) {
         }
 
         void update_impl(float delta) {
@@ -36,7 +36,8 @@ namespace platformer {
 
         StateMachine<StateWalk> state_machine{*this};
         glm::vec2 velocity{};
-        AABBCollider hurt_box;
+        AABBCollider collider{glm::vec2{32, 32}};
+        const TileMap& tile_map;
         float walkSpeed = 200.f;
         float gravity_scale = 1.f;
     };

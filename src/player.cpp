@@ -1,6 +1,8 @@
 #include "raylib.h"
 #include "player.h"
 
+#include "tile_map.h"
+
 
 void platformer::Player::StateWalk::physics_update(const float delta) {
     const glm::vec2 dir{
@@ -10,16 +12,20 @@ void platformer::Player::StateWalk::physics_update(const float delta) {
 
     player.velocity.x = dir.x * player.walkSpeed;
     player.velocity.y += GRAVITY * player.gravity_scale * delta;
-
-    player.position += player.velocity * delta;
 }
 
 void platformer::Player::StateWalk::draw(const glm::vec2 draw_position) {
-    body_collider.debug_draw(draw_position);
+    player.collider.debug_draw(draw_position);
 }
 
 void platformer::Player::physics_update_impl(const float delta) {
     state_machine.get_current_state().physics_update(delta);
+
+    if (tile_map.is_colliding(position, collider)) {
+        velocity.y = 0.f;
+    }
+
+    position += velocity * delta;
 }
 
 void platformer::Player::draw_impl(const glm::vec2 draw_position) {
