@@ -24,7 +24,7 @@ namespace platformer {
         explicit Player(const TileMap& tile_map) : tile_map(tile_map) {
         }
 
-        void update_impl(float delta) {
+        static void update_impl(float delta) {
         }
 
         void physics_update_impl(float delta);
@@ -36,7 +36,7 @@ namespace platformer {
 
         StateMachine<StateWalk> state_machine{*this};
         glm::vec2 velocity{};
-        AABBCollider collider{glm::vec2{32, 32}};
+        AABBCollider collider{glm::vec2{16, 16}};
         const TileMap& tile_map;
         float walkSpeed = 200.f;
         float gravity_scale = 1.f;
