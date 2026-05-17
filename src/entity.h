@@ -15,7 +15,7 @@ namespace platformer {
 
     class EntityBase {
     public:
-        using TypeId = size_t;
+        using TypeId = uint16_t;
         using UpdateEntitiesFunc = void (*)(float delta);
         using PhysicsUpdateEntitiesFunc = void (*)(float delta);
         using DrawEntitiesFunc = void (*)(float alpha);
