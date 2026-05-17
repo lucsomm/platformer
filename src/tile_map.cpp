@@ -22,4 +22,6 @@ void platformer::TileMap::debug_create_center_platform() {
     for (int i = center - width; i < center + width; i++) {
         tiles[i] = 1;
     }
+
+    tiles[center - map_size.x] = 1;
 }
