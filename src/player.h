@@ -8,9 +8,9 @@ namespace platformer {
 
     class Player : public Entity<Player> {
     public:
-        class StateWalk final : public State {
+        class StateMove final : public State {
         public:
-            explicit StateWalk(Player& player) : player{player} {
+            explicit StateMove(Player& player) : player{player} {
             }
 
             void physics_update(float delta) override;
@@ -33,8 +33,9 @@ namespace platformer {
 
     private:
         static constexpr float GRAVITY = 200.f;
+        static constexpr float JUMP_HEIGHT = 200;
 
-        StateMachine<StateWalk> state_machine{*this};
+        StateMachine<StateMove> state_machine{*this};
         glm::vec2 velocity{};
         AABBCollider collider{glm::vec2{16, 16}};
         const TileMap& tile_map;

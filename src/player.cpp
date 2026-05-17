@@ -4,17 +4,22 @@
 #include "tile_map.h"
 
 
-void platformer::Player::StateWalk::physics_update(const float delta) {
+void platformer::Player::StateMove::physics_update(const float delta) {
     const glm::vec2 dir{
         static_cast<float>(IsKeyDown(KEY_D)) - static_cast<float>(IsKeyDown(KEY_A)),
         static_cast<float>(IsKeyDown(KEY_S)) - static_cast<float>(IsKeyDown(KEY_W))
     };
 
     player.velocity.x = dir.x * player.walkSpeed;
+
+    if (IsKeyPressed(KEY_SPACE) && player.velocity.y == 0.f) {
+        player.velocity.y = -JUMP_HEIGHT;
+    }
+
     player.velocity.y += GRAVITY * player.gravity_scale * delta;
 }
 
-void platformer::Player::StateWalk::draw(const glm::vec2 draw_position) {
+void platformer::Player::StateMove::draw(const glm::vec2 draw_position) {
     player.collider.debug_draw(draw_position);
 }
 
