@@ -3,6 +3,11 @@
 
 #include "tile_map.h"
 
+void platformer::Player::StateMove::update(float delta) {
+    if (IsKeyPressed(KEY_SPACE) && player.tile_map.is_colliding(player.position + glm::vec2{0, 2}, player.collider)) {
+        player.velocity.y = -JUMP_HEIGHT;
+    }
+}
 
 void platformer::Player::StateMove::physics_update(const float delta) {
     const glm::vec2 dir{
@@ -12,15 +17,15 @@ void platformer::Player::StateMove::physics_update(const float delta) {
 
     player.velocity.x = dir.x * player.walkSpeed;
 
-    if (IsKeyPressed(KEY_SPACE) && player.velocity.y == 0.f) {
-        player.velocity.y = -JUMP_HEIGHT;
-    }
-
     player.velocity.y += GRAVITY * player.gravity_scale * delta;
 }
 
 void platformer::Player::StateMove::draw(const glm::vec2 draw_position) {
     player.collider.debug_draw(draw_position);
+}
+
+void platformer::Player::update_impl(const float delta) {
+    state_machine.get_current_state().update(delta);
 }
 
 void platformer::Player::physics_update_impl(const float delta) {

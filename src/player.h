@@ -13,6 +13,8 @@ namespace platformer {
             explicit StateMove(Player& player) : player{player} {
             }
 
+            void update(float delta) override;
+
             void physics_update(float delta) override;
 
             void draw(glm::vec2 draw_position) override;
@@ -24,8 +26,7 @@ namespace platformer {
         explicit Player(const TileMap& tile_map) : tile_map(tile_map) {
         }
 
-        static void update_impl(float delta) {
-        }
+        void update_impl(float delta);
 
         void physics_update_impl(float delta);
 
