@@ -58,10 +58,13 @@ namespace platformer {
 
         void poll_input_dir();
 
+        void debug_draw_spear_marker(glm::vec2 draw_position) const;
+
         StateMachine<StateWalking, StateAirborne> state_machine{*this};
-        glm::vec2 input_dir{};
         PhysicsBody body{AABBCollider{{16.f, 16.f}}};
         const TileMap& tile_map;
+        glm::vec2 input_dir{};
+        float h_facing{1};
         float walkSpeed = 200.f;
         float gravity_scale = 1.f;
     };
