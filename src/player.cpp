@@ -16,6 +16,8 @@ void platformer::Player::Walking::update(float delta) {
 }
 
 void platformer::Player::Walking::physics_update(const float delta) {
+    player.update_h_facing();
+    player.update_spear_dir();
     player.default_movement(delta);
 
     if (!player.body.is_on_floor()) {
@@ -37,6 +39,8 @@ void platformer::Player::Airborne::update(float delta) {
 }
 
 void platformer::Player::Airborne::physics_update(const float delta) {
+    player.update_h_facing();
+    player.update_spear_dir();
     player.default_movement(delta);
 
     if (player.body.is_on_floor()) {
@@ -46,12 +50,18 @@ void platformer::Player::Airborne::physics_update(const float delta) {
 
 void platformer::Player::Stabbing::update(const float delta) {
     player.poll_input_dir();
+
+    if (!IsKeyDown(KEY_RIGHT_SHIFT)) {
+        if (player.body.is_on_floor()) {
+            player.state_machine.change_state<Walking>(std::ref(player));
+        } else {
+            player.state_machine.change_state<Airborne>(std::ref(player), false);
+        }
+    }
 }
 
 void platformer::Player::Stabbing::physics_update(const float delta) {
-    player.body.velocity.x = player.input_dir.x * player.walkSpeed;
-    player.body.velocity.y += GRAVITY * player.gravity_scale * delta;
-    player.body.move_and_slide(delta, player.position, player.tile_map);
+    player.default_movement(delta);
 }
 
 void platformer::Player::Stabbing::draw(const glm::vec2 draw_position) {
@@ -95,13 +105,8 @@ void platformer::Player::debug_draw_spear_marker(const glm::vec2 draw_position) 
     }
 }
 
+
 void platformer::Player::default_movement(const float delta) {
-    if (input_dir.x != 0.f) {
-        h_facing = input_dir.x;
-    }
-
-    update_spear_dir();
-
     body.velocity.x = input_dir.x * walkSpeed;
     body.velocity.y += GRAVITY * gravity_scale * delta;
     body.move_and_slide(delta, position, tile_map);

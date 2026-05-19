@@ -41,7 +41,6 @@ namespace platformer {
         class Stabbing final : public State {
         public:
             explicit Stabbing(Player& player) : player{player} {
-                player.body.velocity = glm::vec2{};
             }
 
             void update(float delta) override;
@@ -74,6 +73,12 @@ namespace platformer {
         void update_spear_dir();
 
         void debug_draw_spear_marker(glm::vec2 draw_position) const;
+
+        void update_h_facing() {
+            if (input_dir.x != 0.f) {
+                h_facing = input_dir.x;
+            }
+        }
 
         void default_movement(float delta);
 
