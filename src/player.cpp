@@ -3,27 +3,27 @@
 
 #include "game.h"
 
-void platformer::Player::StateWalking::update(float delta) {
+void platformer::Player::Walking::update(float delta) {
     player.poll_input_dir();
 
     if (IsKeyPressed(KEY_SPACE) && player.body.is_on_floor()) {
-        player.state_machine.change_state<StateAirborne>(std::ref(player), true);
+        player.state_machine.change_state<Airborne>(std::ref(player), true);
     }
 
     if (IsKeyPressed(KEY_RIGHT_SHIFT)) {
-        player.state_machine.change_state<StateStabSpear>(std::ref(player));
+        player.state_machine.change_state<Stabbing>(std::ref(player));
     }
 }
 
-void platformer::Player::StateWalking::physics_update(const float delta) {
+void platformer::Player::Walking::physics_update(const float delta) {
     player.default_movement(delta);
 
     if (!player.body.is_on_floor()) {
-        player.state_machine.change_state<StateAirborne>(std::ref(player), false);
+        player.state_machine.change_state<Airborne>(std::ref(player), false);
     }
 }
 
-void platformer::Player::StateAirborne::update(float delta) {
+void platformer::Player::Airborne::update(float delta) {
     player.poll_input_dir();
 
     if (jumped && !IsKeyDown(KEY_SPACE)) {
@@ -32,29 +32,29 @@ void platformer::Player::StateAirborne::update(float delta) {
     }
 
     if (IsKeyPressed(KEY_RIGHT_SHIFT)) {
-        player.state_machine.change_state<StateStabSpear>(std::ref(player));
+        player.state_machine.change_state<Stabbing>(std::ref(player));
     }
 }
 
-void platformer::Player::StateAirborne::physics_update(const float delta) {
+void platformer::Player::Airborne::physics_update(const float delta) {
     player.default_movement(delta);
 
     if (player.body.is_on_floor()) {
-        player.state_machine.change_state<StateWalking>(std::ref(player));
+        player.state_machine.change_state<Walking>(std::ref(player));
     }
 }
 
-void platformer::Player::StateStabSpear::update(const float delta) {
+void platformer::Player::Stabbing::update(const float delta) {
     player.poll_input_dir();
 }
 
-void platformer::Player::StateStabSpear::physics_update(const float delta) {
+void platformer::Player::Stabbing::physics_update(const float delta) {
     player.body.velocity.x = player.input_dir.x * player.walkSpeed;
     player.body.velocity.y += GRAVITY * player.gravity_scale * delta;
     player.body.move_and_slide(delta, player.position, player.tile_map);
 }
 
-void platformer::Player::StateStabSpear::draw(const glm::vec2 draw_position) {
+void platformer::Player::Stabbing::draw(const glm::vec2 draw_position) {
     DrawLineV(to_ray_vec(draw_position), to_ray_vec(draw_position + player.spear_dir * SPEAR_LENGTH), GREEN);
 }
 
