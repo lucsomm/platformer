@@ -8,9 +8,9 @@ namespace platformer {
 
     class Player : public Entity<Player> {
     public:
-        class StateMove final : public State {
+        class StateWalking final : public State {
         public:
-            explicit StateMove(Player& player) : player{player} {
+            explicit StateWalking(Player& player) : player{player} {
             }
 
             void update(float delta) override;
@@ -21,6 +21,25 @@ namespace platformer {
 
         private:
             Player& player;
+        };
+
+        class StateAirborne final : public State {
+        public:
+            explicit StateAirborne(Player& player, const bool jumped) : player{player}, jumped{jumped} {
+                if (jumped) {
+                    player.velocity.y = -JUMP_HEIGHT;
+                }
+            }
+
+            void update(float delta) override;
+
+            void physics_update(float delta) override;
+
+            void draw(glm::vec2 draw_position) override;
+
+        private:
+            Player& player;
+            bool jumped{};
         };
 
         explicit Player(const TileMap& tile_map) : tile_map(tile_map) {
@@ -35,10 +54,11 @@ namespace platformer {
     private:
         static constexpr float GRAVITY = 800.f;
         static constexpr float JUMP_HEIGHT = 400.f;
+        static constexpr float JUMP_RELEASE = .6f;
 
         void poll_input_dir();
 
-        StateMachine<StateMove> state_machine{*this};
+        StateMachine<StateWalking, StateAirborne> state_machine{*this};
         glm::vec2 input_dir{};
         glm::vec2 velocity{};
         AABBCollider collider{glm::vec2{16, 16}};
