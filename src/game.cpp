@@ -8,8 +8,8 @@
 
 platformer::Game::StateGameplay::StateGameplay() {
     tile_map.debug_create_center_platform();
-    auto& player = Player::create(tile_map);
-    player.position = glm::vec2{tile_map.get_size().x / 2 * TileMap::TILE_SIZE, 32};
+    player = &Player::create(tile_map);
+    player->position = glm::vec2{tile_map.get_size().x / 2 * TileMap::TILE_SIZE, 32};
 
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 450;
@@ -30,6 +30,8 @@ void platformer::Game::StateGameplay::physics_update(const float delta) {
 
 void platformer::Game::StateGameplay::draw(const float alpha) {
     ClearBackground(Color{50, 50, 50, 255});
+
+    get_singleton().main_camera.target = to_ray_vec(player->get_draw_position(alpha));
 
     BeginMode2D(get_singleton().main_camera);
 

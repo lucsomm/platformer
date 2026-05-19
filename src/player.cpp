@@ -20,9 +20,6 @@ void platformer::Player::StateMove::physics_update(const float delta) {
 }
 
 void platformer::Player::StateMove::draw(const glm::vec2 draw_position) {
-    // Brittle! Always make sure that player is the first registered entity otherwise
-    // things might draw before camera has moved!
-    Game::get_singleton().main_camera.target = to_ray_vec(draw_position);
     player.collider.debug_draw(draw_position);
 }
 

@@ -4,6 +4,8 @@
 #include "tile_map.h"
 
 namespace platformer {
+    class Player;
+
     class Game {
     public:
         struct StateGameplay final : State {
@@ -15,6 +17,7 @@ namespace platformer {
 
             void draw(float alpha) override;
 
+            Player* player;
             TileMap tile_map{16, 16};
         };
 
