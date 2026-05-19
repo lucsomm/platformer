@@ -60,6 +60,8 @@ namespace platformer {
 
         void debug_draw_spear_marker(glm::vec2 draw_position) const;
 
+        void default_movement(float delta);
+
         StateMachine<StateWalking, StateAirborne> state_machine{*this};
         PhysicsBody body{AABBCollider{{16.f, 16.f}}};
         const TileMap& tile_map;

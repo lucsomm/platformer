@@ -12,13 +12,7 @@ void platformer::Player::StateWalking::update(float delta) {
 }
 
 void platformer::Player::StateWalking::physics_update(const float delta) {
-    if (player.input_dir.x != 0.f) {
-        player.h_facing = player.input_dir.x;
-    }
-
-    player.body.velocity.x = player.input_dir.x * player.walkSpeed;
-    player.body.velocity.y += GRAVITY * player.gravity_scale * delta;
-    player.body.move_and_slide(delta, player.position, player.tile_map);
+    player.default_movement(delta);
 }
 
 void platformer::Player::StateWalking::draw(const glm::vec2 draw_position) {
@@ -35,13 +29,7 @@ void platformer::Player::StateAirborne::update(float delta) {
 }
 
 void platformer::Player::StateAirborne::physics_update(const float delta) {
-    if (player.input_dir.x != 0.f) {
-        player.h_facing = player.input_dir.x;
-    }
-
-    player.body.velocity.x = player.input_dir.x * player.walkSpeed;
-    player.body.velocity.y += GRAVITY * player.gravity_scale * delta;
-    player.body.move_and_slide(delta, player.position, player.tile_map);
+    player.default_movement(delta);
 
     if (player.body.is_on_floor()) {
         player.state_machine.change_state<StateWalking>(std::ref(player));
@@ -79,4 +67,14 @@ void platformer::Player::debug_draw_spear_marker(const glm::vec2 draw_position) 
     } else {
         DrawCircleV(to_ray_vec(draw_position + glm::vec2{h_facing * body.collider.extents.x, 0.f}), 4, YELLOW);
     }
+}
+
+void platformer::Player::default_movement(const float delta) {
+    if (input_dir.x != 0.f) {
+        h_facing = input_dir.x;
+    }
+
+    body.velocity.x = input_dir.x * walkSpeed;
+    body.velocity.y += GRAVITY * gravity_scale * delta;
+    body.move_and_slide(delta, position, tile_map);
 }
