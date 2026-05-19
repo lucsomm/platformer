@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "player.h"
 
+#include "game.h"
 #include "tile_map.h"
 
 void platformer::Player::StateMove::update(float delta) {

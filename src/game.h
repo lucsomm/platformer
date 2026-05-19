@@ -1,11 +1,12 @@
 #pragma once
+#include "raylib.h"
 #include "state_machine.h"
 #include "tile_map.h"
 
 namespace platformer {
     class Game {
     public:
-        struct StateGameplay final : public State {
+        struct StateGameplay final : State {
             StateGameplay();
 
             void update(float delta) override;
@@ -36,8 +37,9 @@ namespace platformer {
 
         void run();
 
-        StateMachine<StateGameplay> state_machine;
-        // Have a gameplay state that hosts levels as states too?
+        // Start with empty state as to not init camera before window
+        StateMachine<State, StateGameplay> state_machine;
+        Camera2D main_camera;
 
     private:
         void update(float delta);

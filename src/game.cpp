@@ -10,6 +10,14 @@ platformer::Game::StateGameplay::StateGameplay() {
     tile_map.debug_create_center_platform();
     auto& player = Player::create(tile_map);
     player.position = glm::vec2{tile_map.get_size().x / 2 * TileMap::TILE_SIZE, 32};
+
+    constexpr int screenWidth = 800;
+    constexpr int screenHeight = 450;
+
+    get_singleton().main_camera.target = Vector2{0, 0};
+    get_singleton().main_camera.offset = (Vector2){screenWidth / 2.0f, screenHeight / 2.0f};
+    get_singleton().main_camera.rotation = 0.0f;
+    get_singleton().main_camera.zoom = 1.0f;
 }
 
 void platformer::Game::StateGameplay::update(const float delta) {
@@ -21,9 +29,14 @@ void platformer::Game::StateGameplay::physics_update(const float delta) {
 }
 
 void platformer::Game::StateGameplay::draw(const float alpha) {
-    EntityBase::draw_all(alpha);
+    ClearBackground(Color{50, 50, 50, 255});
 
+    BeginMode2D(get_singleton().main_camera);
+
+    EntityBase::draw_all(alpha);
     tile_map.debug_draw();
+
+    EndMode2D();
 }
 
 platformer::Game::Game() {
@@ -57,13 +70,14 @@ void platformer::Game::physics_update(const float delta) {
 void platformer::Game::draw(const float alpha) {
     BeginDrawing();
 
-    ClearBackground(Color{50, 50, 50, 255});
     state_machine.get_current_state().draw(alpha);
 
     EndDrawing();
 }
 
 void platformer::Game::run() {
+    state_machine.change_state<StateGameplay>();
+
     double physics_accumulator = 0.;
 
     using clock = std::chrono::high_resolution_clock;
