@@ -17,8 +17,6 @@ namespace platformer {
 
             void physics_update(float delta) override;
 
-            void draw(glm::vec2 draw_position) override;
-
         private:
             Player& player;
         };
@@ -35,14 +33,23 @@ namespace platformer {
 
             void physics_update(float delta) override;
 
-            void draw(glm::vec2 draw_position) override;
-
         private:
             Player& player;
             bool jumped{};
         };
 
         class StateSpear final : public State {
+        public:
+            explicit StateSpear(Player& player) : player{player} {
+                player.body.velocity = glm::vec2{};
+            }
+
+            void update(float delta) override;
+
+            void physics_update(float delta) override;
+
+            void draw(glm::vec2 draw_position) override;
+
         private:
             Player& player;
         };
@@ -60,6 +67,7 @@ namespace platformer {
         static constexpr float GRAVITY = 800.f;
         static constexpr float JUMP_HEIGHT = 400.f;
         static constexpr float JUMP_RELEASE = .6f;
+        static constexpr float SPEAR_LENGTH = TileMap::TILE_SIZE * 2;
 
         void poll_input_dir();
 
