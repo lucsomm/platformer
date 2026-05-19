@@ -40,9 +40,6 @@ namespace platformer {
         virtual void draw(glm::vec2 draw_position) {
         }
 
-        virtual void exit() {
-        }
-
         [[nodiscard]] const StateMachineBase& get_state_machine() const {
             assert(state_machine != nullptr);
             return *state_machine;
@@ -123,7 +120,6 @@ namespace platformer {
         }
 
         void destroy_state() const {
-            current_state->exit();
             std::destroy_at(current_state);
         }
 
