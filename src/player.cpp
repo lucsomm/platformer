@@ -2,7 +2,6 @@
 #include "player.h"
 
 #include "game.h"
-#include "tile_map.h"
 
 void platformer::Player::StateMove::update(float delta) {
     if (IsKeyPressed(KEY_SPACE) && player.collider.is_colliding(player.position + glm::vec2{0, 2}, player.tile_map)) {
@@ -21,6 +20,9 @@ void platformer::Player::StateMove::physics_update(const float delta) {
 }
 
 void platformer::Player::StateMove::draw(const glm::vec2 draw_position) {
+    // Brittle! Always make sure that player is the first registered entity otherwise
+    // things might draw before camera has moved!
+    Game::get_singleton().main_camera.target = to_ray_vec(draw_position);
     player.collider.debug_draw(draw_position);
 }
 
