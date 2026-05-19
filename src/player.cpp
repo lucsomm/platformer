@@ -7,6 +7,8 @@ void platformer::Player::StateMove::update(float delta) {
     if (IsKeyPressed(KEY_SPACE) && player.collider.is_colliding(player.position + glm::vec2{0, 2}, player.tile_map)) {
         player.velocity.y = -JUMP_HEIGHT;
     }
+
+    player.poll_input_dir();
 }
 
 void platformer::Player::StateMove::physics_update(const float delta) {
@@ -19,11 +21,6 @@ void platformer::Player::StateMove::draw(const glm::vec2 draw_position) {
 }
 
 void platformer::Player::update_impl(const float delta) {
-    input_dir = glm::vec2{
-        static_cast<float>(IsKeyDown(KEY_D)) - static_cast<float>(IsKeyDown(KEY_A)),
-        static_cast<float>(IsKeyDown(KEY_S)) - static_cast<float>(IsKeyDown(KEY_W))
-    };
-
     state_machine.get_current_state().update(delta);
 }
 
@@ -34,4 +31,11 @@ void platformer::Player::physics_update_impl(const float delta) {
 
 void platformer::Player::draw_impl(const glm::vec2 draw_position) {
     state_machine.get_current_state().draw(draw_position);
+}
+
+void platformer::Player::poll_input_dir() {
+    input_dir = glm::vec2{
+        static_cast<float>(IsKeyDown(KEY_D)) - static_cast<float>(IsKeyDown(KEY_A)),
+        static_cast<float>(IsKeyDown(KEY_S)) - static_cast<float>(IsKeyDown(KEY_W))
+    };
 }

@@ -36,6 +36,8 @@ namespace platformer {
         static constexpr float GRAVITY = 800.f;
         static constexpr float JUMP_HEIGHT = 400.f;
 
+        void poll_input_dir();
+
         StateMachine<StateMove> state_machine{*this};
         glm::vec2 input_dir{};
         glm::vec2 velocity{};
