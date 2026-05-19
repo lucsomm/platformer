@@ -11,7 +11,7 @@ void platformer::Player::StateWalking::update(float delta) {
     }
 
     if (IsKeyPressed(KEY_RIGHT_SHIFT)) {
-        player.state_machine.change_state<StateSpear>(std::ref(player));
+        player.state_machine.change_state<StateStabSpear>(std::ref(player));
     }
 }
 
@@ -26,13 +26,13 @@ void platformer::Player::StateWalking::physics_update(const float delta) {
 void platformer::Player::StateAirborne::update(float delta) {
     player.poll_input_dir();
 
-    if (jumped && IsKeyReleased(KEY_SPACE)) {
+    if (jumped && !IsKeyDown(KEY_SPACE)) {
         player.body.velocity.y *= JUMP_RELEASE;
         jumped = false;
     }
 
     if (IsKeyPressed(KEY_RIGHT_SHIFT)) {
-        player.state_machine.change_state<StateSpear>(std::ref(player));
+        player.state_machine.change_state<StateStabSpear>(std::ref(player));
     }
 }
 
@@ -44,15 +44,18 @@ void platformer::Player::StateAirborne::physics_update(const float delta) {
     }
 }
 
-void platformer::Player::StateSpear::update(const float delta) {
+void platformer::Player::StateStabSpear::update(const float delta) {
     player.poll_input_dir();
 }
 
-void platformer::Player::StateSpear::physics_update(const float delta) {
+void platformer::Player::StateStabSpear::physics_update(const float delta) {
+    player.body.velocity.x = player.input_dir.x * player.walkSpeed;
+    player.body.velocity.y += GRAVITY * player.gravity_scale * delta;
     player.body.move_and_slide(delta, player.position, player.tile_map);
 }
 
-void platformer::Player::StateSpear::draw(const glm::vec2 draw_position) {
+void platformer::Player::StateStabSpear::draw(const glm::vec2 draw_position) {
+    DrawLineV(to_ray_vec(draw_position), to_ray_vec(draw_position + player.spear_dir * SPEAR_LENGTH), GREEN);
 }
 
 void platformer::Player::update_impl(const float delta) {

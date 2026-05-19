@@ -38,9 +38,9 @@ namespace platformer {
             bool jumped{};
         };
 
-        class StateSpear final : public State {
+        class StateStabSpear final : public State {
         public:
-            explicit StateSpear(Player& player) : player{player} {
+            explicit StateStabSpear(Player& player) : player{player} {
                 player.body.velocity = glm::vec2{};
             }
 
