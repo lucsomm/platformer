@@ -98,7 +98,7 @@ namespace platformer {
         void default_movement(float delta);
 
         StateMachine<Walking, Airborne> locomotion_machine{*this};
-        StateMachine<ActionStabbing> action_machine{*this};
+        StateMachine<ActionNeutral, ActionStabbing> action_machine{*this};
         PhysicsBody body{AABBCollider{{16.f, 16.f}}};
         const TileMap& tile_map;
         glm::vec2 input_dir{};
