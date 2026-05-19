@@ -7,21 +7,19 @@ void platformer::Player::Walking::update(float delta) {
     player.poll_input_dir();
 
     if (IsKeyPressed(KEY_SPACE) && player.body.is_on_floor()) {
-        player.state_machine.change_state<Airborne>(std::ref(player), true);
+        player.locomotion_machine.change_state<Airborne>(std::ref(player), true);
     }
 
     if (IsKeyPressed(KEY_RIGHT_SHIFT)) {
-        player.state_machine.change_state<Stabbing>(std::ref(player));
+        player.action_machine.change_state<ActionStabbing>(std::ref(player));
     }
 }
 
 void platformer::Player::Walking::physics_update(const float delta) {
-    player.update_h_facing();
-    player.update_spear_dir();
     player.default_movement(delta);
 
     if (!player.body.is_on_floor()) {
-        player.state_machine.change_state<Airborne>(std::ref(player), false);
+        player.locomotion_machine.change_state<Airborne>(std::ref(player), false);
     }
 }
 
@@ -34,51 +32,60 @@ void platformer::Player::Airborne::update(float delta) {
     }
 
     if (IsKeyPressed(KEY_RIGHT_SHIFT)) {
-        player.state_machine.change_state<Stabbing>(std::ref(player));
+        player.action_machine.change_state<ActionStabbing>(std::ref(player));
     }
 }
 
 void platformer::Player::Airborne::physics_update(const float delta) {
-    player.update_h_facing();
-    player.update_spear_dir();
     player.default_movement(delta);
 
     if (player.body.is_on_floor()) {
-        player.state_machine.change_state<Walking>(std::ref(player));
+        player.locomotion_machine.change_state<Walking>(std::ref(player));
     }
 }
 
-void platformer::Player::Stabbing::update(const float delta) {
+void platformer::Player::ActionNeutral::update(float delta) {
+    State::update(delta);
+}
+
+void platformer::Player::ActionNeutral::physics_update(float delta) {
+    player.update_h_facing();
+    player.update_spear_dir();
+}
+
+void platformer::Player::ActionNeutral::draw(glm::vec2 draw_position) {
+    State::draw(draw_position);
+}
+
+void platformer::Player::ActionStabbing::update(const float delta) {
     player.poll_input_dir();
 
     if (!IsKeyDown(KEY_RIGHT_SHIFT)) {
-        if (player.body.is_on_floor()) {
-            player.state_machine.change_state<Walking>(std::ref(player));
-        } else {
-            player.state_machine.change_state<Airborne>(std::ref(player), false);
-        }
+        player.action_machine.change_state<ActionNeutral>(std::ref(player));
     }
 }
 
-void platformer::Player::Stabbing::physics_update(const float delta) {
-    player.default_movement(delta);
+void platformer::Player::ActionStabbing::physics_update(float delta) {
 }
 
-void platformer::Player::Stabbing::draw(const glm::vec2 draw_position) {
+void platformer::Player::ActionStabbing::draw(const glm::vec2 draw_position) {
     DrawLineV(to_ray_vec(draw_position), to_ray_vec(draw_position + player.spear_dir * SPEAR_LENGTH), GREEN);
 }
 
 void platformer::Player::update_impl(const float delta) {
-    state_machine.get_current_state().update(delta);
+    locomotion_machine.get_current_state().update(delta);
+    action_machine.get_current_state().update(delta);
 }
 
 void platformer::Player::physics_update_impl(const float delta) {
-    state_machine.get_current_state().physics_update(delta);
+    locomotion_machine.get_current_state().physics_update(delta);
+    action_machine.get_current_state().physics_update(delta);
 }
 
 void platformer::Player::draw_impl(const glm::vec2 draw_position) {
     body.collider.debug_draw(draw_position);
-    state_machine.get_current_state().draw(draw_position);
+    locomotion_machine.get_current_state().draw(draw_position);
+    action_machine.get_current_state().draw(draw_position);
     debug_draw_spear_marker(draw_position);
 }
 

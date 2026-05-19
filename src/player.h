@@ -38,9 +38,24 @@ namespace platformer {
             bool jumped{};
         };
 
-        class Stabbing final : public State {
+        class ActionNeutral final : public State {
         public:
-            explicit Stabbing(Player& player) : player{player} {
+            explicit ActionNeutral(Player& player) : player{player} {
+            }
+
+            void update(float delta) override;
+
+            void physics_update(float delta) override;
+
+            void draw(glm::vec2 draw_position) override;
+
+        private:
+            Player& player;
+        };
+
+        class ActionStabbing final : public State {
+        public:
+            explicit ActionStabbing(Player& player) : player{player} {
             }
 
             void update(float delta) override;
@@ -82,7 +97,8 @@ namespace platformer {
 
         void default_movement(float delta);
 
-        StateMachine<Walking, Airborne> state_machine{*this};
+        StateMachine<Walking, Airborne> locomotion_machine{*this};
+        StateMachine<ActionStabbing> action_machine{*this};
         PhysicsBody body{AABBCollider{{16.f, 16.f}}};
         const TileMap& tile_map;
         glm::vec2 input_dir{};
