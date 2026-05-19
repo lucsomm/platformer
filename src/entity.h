@@ -125,9 +125,12 @@ namespace platformer {
             static_cast<Derived*>(this)->physics_update_impl(delta);
         }
 
+        [[nodiscard]] glm::vec2 get_draw_position(const float alpha) const {
+            return previous_position + (position - previous_position) * alpha;
+        }
+
         void draw(const float alpha) {
-            glm::vec2 draw_position = previous_position + (position - previous_position) * alpha;
-            static_cast<Derived*>(this)->draw_impl(draw_position);
+            static_cast<Derived*>(this)->draw_impl(get_draw_position(alpha));
         }
 
     protected:
