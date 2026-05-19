@@ -42,6 +42,11 @@ namespace platformer {
             bool jumped{};
         };
 
+        class StateSpear final : public State {
+        private:
+            Player& player;
+        };
+
         explicit Player(const TileMap& tile_map) : tile_map(tile_map) {
         }
 
@@ -58,6 +63,8 @@ namespace platformer {
 
         void poll_input_dir();
 
+        void update_spear_dir();
+
         void debug_draw_spear_marker(glm::vec2 draw_position) const;
 
         void default_movement(float delta);
@@ -66,6 +73,7 @@ namespace platformer {
         PhysicsBody body{AABBCollider{{16.f, 16.f}}};
         const TileMap& tile_map;
         glm::vec2 input_dir{};
+        glm::vec2 spear_dir{1.f, 0.f};
         float h_facing{1};
         float walkSpeed = 200.f;
         float gravity_scale = 1.f;
