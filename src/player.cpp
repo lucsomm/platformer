@@ -10,12 +10,7 @@ void platformer::Player::StateMove::update(float delta) {
 }
 
 void platformer::Player::StateMove::physics_update(const float delta) {
-    const glm::vec2 dir{
-        static_cast<float>(IsKeyDown(KEY_D)) - static_cast<float>(IsKeyDown(KEY_A)),
-        static_cast<float>(IsKeyDown(KEY_S)) - static_cast<float>(IsKeyDown(KEY_W))
-    };
-
-    player.velocity.x = dir.x * player.walkSpeed;
+    player.velocity.x = player.input_dir.x * player.walkSpeed;
     player.velocity.y += GRAVITY * player.gravity_scale * delta;
 }
 
@@ -24,6 +19,11 @@ void platformer::Player::StateMove::draw(const glm::vec2 draw_position) {
 }
 
 void platformer::Player::update_impl(const float delta) {
+    input_dir = glm::vec2{
+        static_cast<float>(IsKeyDown(KEY_D)) - static_cast<float>(IsKeyDown(KEY_A)),
+        static_cast<float>(IsKeyDown(KEY_S)) - static_cast<float>(IsKeyDown(KEY_W))
+    };
+
     state_machine.get_current_state().update(delta);
 }
 

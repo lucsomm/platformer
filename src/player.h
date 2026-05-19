@@ -33,10 +33,11 @@ namespace platformer {
         void draw_impl(glm::vec2 draw_position);
 
     private:
-        static constexpr float GRAVITY = 200.f;
-        static constexpr float JUMP_HEIGHT = 200;
+        static constexpr float GRAVITY = 800.f;
+        static constexpr float JUMP_HEIGHT = 400.f;
 
         StateMachine<StateMove> state_machine{*this};
+        glm::vec2 input_dir{};
         glm::vec2 velocity{};
         AABBCollider collider{glm::vec2{16, 16}};
         const TileMap& tile_map;
