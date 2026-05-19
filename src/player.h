@@ -27,7 +27,7 @@ namespace platformer {
         public:
             explicit StateAirborne(Player& player, const bool jumped) : player{player}, jumped{jumped} {
                 if (jumped) {
-                    player.velocity.y = -JUMP_HEIGHT;
+                    player.body.velocity.y = -JUMP_HEIGHT;
                 }
             }
 
@@ -60,8 +60,7 @@ namespace platformer {
 
         StateMachine<StateWalking, StateAirborne> state_machine{*this};
         glm::vec2 input_dir{};
-        glm::vec2 velocity{};
-        AABBCollider collider{glm::vec2{16, 16}};
+        PhysicsBody body{AABBCollider{{16.f, 16.f}}};
         const TileMap& tile_map;
         float walkSpeed = 200.f;
         float gravity_scale = 1.f;
