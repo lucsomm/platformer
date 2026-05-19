@@ -6,8 +6,7 @@
 void platformer::Player::StateWalking::update(float delta) {
     player.poll_input_dir();
 
-    if (IsKeyPressed(KEY_SPACE) && player.body.collider.
-        is_colliding(player.position + glm::vec2{0, 2}, player.tile_map)) {
+    if (IsKeyPressed(KEY_SPACE) && player.body.is_on_floor()) {
         player.state_machine.change_state<StateAirborne>(std::ref(player), true);
     }
 }
