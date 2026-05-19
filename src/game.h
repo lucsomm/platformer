@@ -8,8 +8,8 @@ namespace platformer {
 
     class Game {
     public:
-        struct StateGameplay final : State {
-            StateGameplay();
+        struct StateWorld final : State {
+            StateWorld();
 
             void update(float delta) override;
 
@@ -41,7 +41,7 @@ namespace platformer {
         void run();
 
         // Start with empty state as to not init camera before window
-        StateMachine<State, StateGameplay> state_machine;
+        StateMachine<State, StateWorld> state_machine;
         Camera2D main_camera;
 
     private:

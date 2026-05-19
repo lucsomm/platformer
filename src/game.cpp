@@ -6,7 +6,7 @@
 #include "raylib.h"
 #include "player.h"
 
-platformer::Game::StateGameplay::StateGameplay() {
+platformer::Game::StateWorld::StateWorld() {
     tile_map.debug_create_center_platform();
     player = &Player::create(tile_map);
     player->position = glm::vec2{tile_map.get_size().x / 2 * TileMap::TILE_SIZE, 32};
@@ -20,15 +20,15 @@ platformer::Game::StateGameplay::StateGameplay() {
     get_singleton().main_camera.zoom = 1.0f;
 }
 
-void platformer::Game::StateGameplay::update(const float delta) {
+void platformer::Game::StateWorld::update(const float delta) {
     EntityBase::update_all(delta);
 }
 
-void platformer::Game::StateGameplay::physics_update(const float delta) {
+void platformer::Game::StateWorld::physics_update(const float delta) {
     EntityBase::physics_update_all(delta);
 }
 
-void platformer::Game::StateGameplay::draw(const float alpha) {
+void platformer::Game::StateWorld::draw(const float alpha) {
     ClearBackground(Color{50, 50, 50, 255});
 
     get_singleton().main_camera.target = to_ray_vec(player->get_draw_position(alpha));
@@ -78,7 +78,7 @@ void platformer::Game::draw(const float alpha) {
 }
 
 void platformer::Game::run() {
-    state_machine.change_state<StateGameplay>();
+    state_machine.change_state<StateWorld>();
 
     double physics_accumulator = 0.;
 
