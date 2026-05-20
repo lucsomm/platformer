@@ -3,6 +3,35 @@
 #include "glm/vec2.hpp"
 
 namespace platformer {
+    template<typename T>
+    T sign(T val) {
+        return (T{} < val) - (val < T{});
+    }
+
+    struct RaycastResult {
+        RaycastResult(const glm::vec2 point, const bool hit) : point{point}, hit{hit} {
+        }
+
+        glm::vec2 point{};
+        bool hit{};
+    };
+
+    inline RaycastResult AARaycast(const glm::vec2 position, const glm::vec2 ray, const TileMap& tile_map) {
+        const glm::vec2 dir{sign(ray.x), sign(ray.y)};
+        const float ray_len = ray.x + ray.y;
+        float res_len{};
+
+        while (res_len < ray_len) {
+            if (tile_map.get_tile(position + dir * res_len) > 0) {
+                return RaycastResult{dir * res_len, true};
+            }
+
+            res_len += std::min(static_cast<float>(TileMap::TILE_SIZE), ray_len - res_len);
+        }
+
+        return RaycastResult{ray, false};
+    }
+
     struct AABBCollider {
         explicit AABBCollider(const glm::vec2 extents, const glm::vec2 center = {}) : extents{extents}, center{center} {
         }
