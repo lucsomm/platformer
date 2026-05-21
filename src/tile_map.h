@@ -19,15 +19,31 @@ namespace platformer {
             return position.y * map_size.x + position.x;
         }
 
-        [[nodiscard]] glm::ivec2 to_position(const int index) const {
-            return glm::ivec2{index % map_size.x, index / map_size.x} * TILE_SIZE;
+        [[nodiscard]] glm::vec2 to_world_position(const int index) const {
+            return glm::vec2{index % map_size.x, index / map_size.x} * static_cast<float>(TILE_SIZE);
         }
 
-        [[nodiscard]] const Tile& get_tile(const glm::ivec2 position) const {
+        [[nodiscard]] glm::ivec2 to_tile_position(const int index) const {
+            return glm::ivec2{index % map_size.x, index / map_size.x};
+        }
+
+        [[nodiscard]] const Tile& get_tile_at_world_position(glm::vec2 position) const {
+            position.x /= TILE_SIZE;
+            position.y /= TILE_SIZE;
             return tiles[to_index(position)];
         }
 
-        [[nodiscard]] Tile& get_tile(const glm::ivec2 position) {
+        [[nodiscard]] Tile& get_tile_at_world_position(glm::vec2 position) {
+            position.x /= TILE_SIZE;
+            position.y /= TILE_SIZE;
+            return tiles[to_index(position)];
+        }
+
+        [[nodiscard]] const Tile& get_tile_at_tile_position(const glm::ivec2 position) const {
+            return tiles[to_index(position)];
+        }
+
+        [[nodiscard]] Tile& get_tile_at_tile_position(const glm::ivec2 position) {
             return tiles[to_index(position)];
         }
 

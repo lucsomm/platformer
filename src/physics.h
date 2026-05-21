@@ -16,13 +16,13 @@ namespace platformer {
         bool hit{};
     };
 
-    inline RaycastResult AARaycast(const glm::vec2 position, const glm::vec2 ray, const TileMap& tile_map) {
+    inline RaycastResult aa_raycast(const glm::vec2 position, const glm::vec2 ray, const TileMap& tile_map) {
         const glm::vec2 dir{sign(ray.x), sign(ray.y)};
         const float ray_len = ray.x + ray.y;
         float res_len{};
 
         while (res_len < ray_len) {
-            if (tile_map.get_tile(position + dir * res_len) > 0) {
+            if (tile_map.get_tile_at_world_position(position + dir * res_len) > 0) {
                 return RaycastResult{dir * res_len, true};
             }
 
@@ -52,7 +52,7 @@ namespace platformer {
 
             for (int y = start_tile.y; y <= end_tile.y; ++y) {
                 for (int x = start_tile.x; x <= end_tile.x; ++x) {
-                    if (tile_map.get_tile({x, y}) > 0) {
+                    if (tile_map.get_tile_at_tile_position({x, y}) > 0) {
                         return true;
                     }
                 }
@@ -107,7 +107,7 @@ namespace platformer {
 
             for (int y = start_tile.y; y <= end_tile.y; ++y) {
                 for (int x = start_tile.x; x <= end_tile.x; ++x) {
-                    if (tile_map.get_tile({x, y}) > 0) {
+                    if (tile_map.get_tile_at_tile_position({x, y}) > 0) {
                         if (velocity.x > 0) {
                             position.x = static_cast<float>(x) * TileMap::TILE_SIZE - collider.extents.x - collider.
                                          center.
@@ -142,7 +142,7 @@ namespace platformer {
 
             for (int y = start_tile.y; y <= end_tile.y; ++y) {
                 for (int x = start_tile.x; x <= end_tile.x; ++x) {
-                    if (tile_map.get_tile({x, y}) > 0) {
+                    if (tile_map.get_tile_at_tile_position({x, y}) > 0) {
                         if (velocity.y > 0) {
                             position.y = static_cast<float>(y) * TileMap::TILE_SIZE - collider.extents.y - collider.
                                          center.

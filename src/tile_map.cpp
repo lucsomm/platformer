@@ -8,7 +8,7 @@ void platformer::TileMap::debug_draw() const {
             continue;
         }
 
-        const auto pos = to_position(i);
+        const auto pos = to_world_position(i);
         DrawRectangleLines(pos.x, pos.y, TILE_SIZE, TILE_SIZE, RAYWHITE);
     }
 
